@@ -1,0 +1,115 @@
+Sub StockTestingDanBruen()
+
+
+    ' Set an initial variable for holding the Ticker
+    Dim Ticker As String
+
+   ' Set an initial variable for holding the total Volume per Ticker
+    Dim Ticker_Vol As Double
+    Ticker_Vol = 0
+  
+    ' Set variables for Opening/Closing Price
+    Dim Yearly_Change As Double
+    Dim Percent_Change As Double
+    Dim Closing_Price As Double
+    Dim Opening_Price As Double
+    
+  ' Keep track of the location for each Ticker in the summary table
+    Dim Summary_Table_Row As Integer
+    Summary_Table_Row = 2
+
+    'Create a range for the Last Row
+
+    Dim Last_Row As Long
+    Last_Row = Cells(Rows.Count, 1).End(xlUp).Row
+    ' Loop through all Tickers
+    Opening_Price = Cells(2, 3).Value
+    For I = 2 To Last_Row
+
+        'Check if we are still within the same Ticker, if it is not...
+        Ticker = Cells(I, 1).Value
+        Next_Row_Ticker_Name = Cells(I + 1, 1).Value
+        If Next_Row_Ticker_Name = Ticker Then
+            ' Add to the Ticker_Vol
+            Ticker_Vol = Ticker_Vol + Cells(I, 7).Value
+        Else
+            ' Add to the Ticker Volume
+            Ticker_Vol = Ticker_Vol + Cells(I, 7).Value
+            ' Print the Ticker in the Summary Table
+            
+            Closing_Price = Cells(I, 6).Value                                                                   'Calculate Yearly Change
+            Yearly_Change = Closing_Price - Opening_Price                                           'Yearly change
+            Percent_Change = (Closing_Price - Opening_Price) / Opening_Price
+            
+            ' Print the Ticker Volume to the Summary Table
+            Range("I" & Summary_Table_Row).Value = Ticker
+            Range("L" & Summary_Table_Row).Value = Ticker_Vol
+            Range("J" & Summary_Table_Row).Value = Yearly_Change
+            Range("K" & Summary_Table_Row).Value = Percent_Change
+            
+                'Use conditional formatting for the Yearly Change
+            If Cells(Summary_Table_Row, 10).Value >= 0 Then
+                Cells(Summary_Table_Row, 10).Interior.ColorIndex = 4
+            Else
+                Cells(Summary_Table_Row, 10).Interior.ColorIndex = 3
+            End If
+
+            Summary_Table_Row = Summary_Table_Row + 1
+
+            ' Reset the Volume Total
+            Ticker_Vol = 0
+      
+            'Grab the new Opening Price
+            Opening_Price = Cells(I + 1, 3).Value
+        End If
+    
+    Next I
+
+
+
+End Sub
+
+Sub StockDataChallenge()
+
+'Gets greatest % increase, decrease and greatest total volume
+
+For I = 1 To 3500
+    Set Rng = Range("L:L")
+    dblMax = Application.WorksheetFunction.Max(Rng)
+    Range("P4") = dblMax
+
+    If Cells(I, 12).Value = dblMax Then
+        Cells(4, 15).Value = Cells(I, 9).Value
+    Else
+    End If
+
+    Next I
+
+For I = 1 To 3500
+    Set rng2 = Range("k:k")
+    greatest_decrease = Application.WorksheetFunction.Min(rng2)
+    Range("P3") = greatest_decrease
+    
+    If Cells(I, 11).Value = greatest_decrease Then
+        Cells(3, 15).Value = Cells(I, 9).Value
+    Else
+    End If
+
+    Next I
+
+For I = 1 To 3500
+    Set rng1 = Range("k:k")
+    greatest_increase = Application.WorksheetFunction.Max(rng1)
+    Range("P2") = greatest_increase
+    
+    If Cells(I, 11).Value = greatest_increase Then
+        Cells(2, 15).Value = Cells(I, 9).Value
+    Else
+    End If
+
+    Next I
+
+
+   
+
+End Sub
